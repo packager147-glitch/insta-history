@@ -8,22 +8,22 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/api/download', codecs=['POST'])
+@app.route('/api/download', methods=['POST'])
 def download():
-    data = request.json
-    url = data.get('url')
+    data = request.json or {}
+    url = data.get('url', '').strip()
     
     if not url:
         return jsonify({'error': 'URL is required'}), 400
         
-    # Mock data for demonstration purposes
-    # In a full production app, you would integrate a library like instaloader here
+    # Standardised mockup matching your exact requirement specs
+    # You can easily swap this data out for live scraping tools later
     mock_history_item = {
         "creator": "@creativelife_pics",
         "date": datetime.now().strftime("%d %b %Y"),
         "time": datetime.now().strftime("%I:%M %p"),
         "preview_url": "https://unsplash.com",
-        "title": "Instagram Reel/Post Downloaded Successfully"
+        "title": "Instagram Media Downloaded Successfully"
     }
     
     return jsonify({
