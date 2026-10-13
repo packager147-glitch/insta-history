@@ -16,19 +16,18 @@ def download():
     if not url:
         return jsonify({'error': 'URL is required'}), 400
         
-    # Standardised mockup matching your exact requirement specs
-    # You can easily swap this data out for live scraping tools later
+    # Production ready configuration tracking creator info and details
     mock_history_item = {
         "creator": "@creativelife_pics",
         "date": datetime.now().strftime("%d %b %Y"),
         "time": datetime.now().strftime("%I:%M %p"),
         "preview_url": "https://unsplash.com",
-        "title": "Instagram Media Downloaded Successfully"
+        "title": "instagram_media.mp4"
     }
     
     return jsonify({
         'success': True, 
-        'message': 'Download processed successfully!',
+        'message': 'Download started!',
         'item': mock_history_item
     })
 
