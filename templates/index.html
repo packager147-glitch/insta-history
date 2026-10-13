@@ -38,9 +38,9 @@
             <span id="historyCount" class="bg-slate-800 text-xs px-2 py-1 rounded-full text-slate-400">0 items</span>
         </div>
         
-        <!-- Filter Options -->
+        <!-- Filter/Sorting Options -->
         <div class="mb-4">
-            <select id="historyFilter" class="w-full bg-slate-900 border border-slate-800 text-xs rounded-lg p-2 text-slate-400 focus:outline-none">
+            <select id="historyFilter" onchange="sortHistory()" class="w-full bg-slate-900 border border-slate-800 text-xs rounded-lg p-2 text-slate-400 focus:outline-none cursor-pointer">
                 <option value="newest">Sort by: Newest First</option>
                 <option value="creator">Sort by: Creator Name</option>
             </select>
@@ -48,7 +48,6 @@
 
         <!-- History Container -->
         <div id="historyList" class="flex-1 overflow-y-auto space-y-3 pr-1 text-sm text-slate-400">
-            <!-- Dynamic items will load here -->
             <p id="emptyState" class="text-center py-8 text-xs text-slate-600">No downloads yet</p>
         </div>
     </aside>
@@ -72,11 +71,24 @@
                 if (data.success) {
                     historyData.unshift(data.item);
                     urlInput.value = '';
-                    renderHistory();
+                    sortHistory(); // Re-sort and render
+                } else {
+                    alert(data.error || 'Something went wrong');
                 }
             } catch (err) {
                 console.error("Error running download:", err);
             }
+        }
+
+        function sortHistory() {
+            const filterValue = document.getElementById('historyFilter').value;
+            
+            if (filterValue === 'creator') {
+                historyData.sort((a, b) => a.creator.localeCompare(b.creator));
+            } else {
+                // Default back to timeline order (Newest items added to array front)
+            }
+            renderHistory();
         }
 
         function renderHistory() {
@@ -84,9 +96,10 @@
             const emptyState = document.getElementById('emptyState');
             const countLabel = document.getElementById('historyCount');
             
-            if(historyData.length === 0) {
+            if (historyData.length === 0) {
                 emptyState.style.display = 'block';
                 countLabel.innerText = '0 items';
+                list.innerHTML = '';
                 return;
             }
             
@@ -94,7 +107,7 @@
             countLabel.innerText = `${historyData.length} item${historyData.length > 1 ? 's' : ''}`;
             
             list.innerHTML = historyData.map(item => `
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex gap-3 items-center hover:border-slate-700 transition">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex gap-3 items-center hover:border-slate-700 transition animate-fade-in">
                     <img src="${item.preview_url}" alt="Preview" class="w-12 h-12 object-cover rounded-lg bg-slate-800 flex-shrink-0">
                     <div class="min-w-0 flex-1">
                         <p class="text-white font-semibold truncate text-xs">${item.creator}</p>
